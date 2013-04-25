@@ -6,7 +6,7 @@ the following actions against it:
 
 * Escape < (less than) and > (greater than)
 * Escape & (ampersand) to &amp;amp;
-* Turns leading tabs and spaces to *&amp;nbsp;
+* Turns leading tabs and spaces to &amp;nbsp;
 
 ## Apache License 2.0
 Copyright 2013 Adam Presley

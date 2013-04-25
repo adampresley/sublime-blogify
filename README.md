@@ -8,6 +8,18 @@ the following actions against it:
 * Escape & (ampersand) to &amp;amp;
 * Turns leading tabs and spaces to &amp;nbsp;
 
+To use this plugin simply press the keys *CTRL + ALT + B* and the entire
+contents of your current tab/view will be modified based on the rules above.
+You may also select a region of code and press the key combination and 
+Blogify will only change the text you've selected.
+
+
+## Release Notes
+
+* **2013-04-25**
+	* Initial release
+
+
 ## Apache License 2.0
 Copyright 2013 Adam Presley
 

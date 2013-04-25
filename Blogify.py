@@ -20,7 +20,6 @@
 
 import sublime, sublime_plugin
 import re
-import inspect
 
 class Blogify(sublime_plugin.TextCommand):
 	def run(self, edit):
@@ -37,13 +36,22 @@ class Blogify(sublime_plugin.TextCommand):
 		self._settings = sublime.load_settings("Blogify.sublime-settings")
 
 		#
-		# Get the contents of the current view
+		# Get the contents of the current view. If we have a 
+		# selection then replace on the selections, otherwise
+		# replace the whole view.
 		#
-		region = sublime.Region(0, self.view.size())
-		text = self.view.substr(region)
+		selections = self.view.sel()
+		doWholeView = False
 
-		replacedText = self._applyFilters(subject=text)
-		print replacedText
+		tempSelections = selections[0]
+		if tempSelections.a == tempSelections.b:
+			doWholeView = True
+
+		if doWholeView:
+			self._replaceWholeView()
+		else:
+			self._replaceSelectedViews(selections=selections)
+
 
 	def _applyFilters(self, subject):
 		result = subject
@@ -61,10 +69,38 @@ class Blogify(sublime_plugin.TextCommand):
 
 		return result
 
+	def _replaceSelectedViews(self, selections):
+		for region in selections:
+			if not region.empty():
+				selectedText = self.view.substr(region)
+
+				replacedText = self._applyFilters(subject=selectedText)
+
+				edit = self.view.begin_edit()
+				self.view.replace(edit, region, replacedText)
+				self.view.end_edit(edit)
+
+	def _replaceWholeView(self):
+		region = sublime.Region(0, self.view.size())
+		text = self.view.substr(region)
+
+		replacedText = self._applyFilters(subject=text)
+
+		region = sublime.Region(0, self.view.size())
+		edit = self.view.begin_edit()
+
+		self.view.replace(edit, region, replacedText)
+		self.view.end_edit(edit)
+
+
+	#
+	# Section: Filters
+	#
 	def _filter_leadingSpaces(self, pattern, subject):
 		replacement = ""
 
 		for i in range(self._settings.get("indentNumSpaces")):
-			replacement += " "
+			replacement += "&nbsp;"
 
 		return re.sub(pattern, replacement, subject)
+
